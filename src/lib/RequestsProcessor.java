@@ -15,7 +15,7 @@ public class RequestsProcessor {
 	{
 		this.queue.add(req);
 	}
-	public Request dequeueRequest(Request req)
+	private Request dequeueRequest(Request req)
 	{
 		return this.queue.remove(0);
 	}

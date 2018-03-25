@@ -42,7 +42,15 @@ public class Client extends Thread {
 					request = request + holder + "\n";
 				}
 
-				requestprocessor.enqueueRequest(parseRequest(request));
+				try 
+				{
+					requestprocessor.enqueueRequest(parseRequest(request));
+				}
+				catch (BadRequestException e) 
+				{
+					System.out.println(e.getMessage());
+					// TODO: send badly formatted request error code
+				}
 			} 
 			catch (IOException e1) 
 			{
@@ -59,34 +67,20 @@ public class Client extends Thread {
 	 * Parses a given string and returns the correct Method object
 	 * @param req
 	 * @return
+	 * @throws BadRequestException 
 	 */
-	private static Request parseRequest(String req)
+	private static Request parseRequest(String req) throws BadRequestException
 	{
 		Request request = null;
 		if(req.matches("GET (.|\n|\r)*"))
 		{
-			try 
-			{
-				request = new Get(req);
-			} 
-			catch (BadRequestException e)
-			{
-				System.out.println(e.getMessage());
-				// TODO: send badly formatted request error code
-			}
+			
+			request = new Get(req);
 		}
 		else if(req.matches("POST (.|\n|\r)*"))
 		{
-			try 
-			{
-				request = new Post(req);
-			}
-			catch (BadRequestException e) 
-			{
-				System.out.println(e.getMessage());
-				// TODO: send badly formatted request error code
-
-			}
+			
+			request = new Post(req);
 		}
 
 		return request;

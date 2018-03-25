@@ -12,7 +12,7 @@ abstract public class Request {
 	private ArrayList<Parameter> cookies;
 	public Request(String request) throws BadRequestException
 	{
-		this.keep_alive = true;
+		this.keep_alive = false;
 		String[] reqLines = request.split("\\r?\\n");
 		// extracts information from each line
 		for(int i = 0; i < reqLines.length; i++)
@@ -43,7 +43,7 @@ abstract public class Request {
 			this.version = parameters[2];
 		}
 		// Host
-		else if(parameters[0].equals("Host"))
+		else if(parameters[0].equals("Host:"))
 		{
 			if(parameters.length != 2)
 			{
@@ -52,7 +52,7 @@ abstract public class Request {
 			this.host = parameters[1];
 		}
 		// connection
-		else if(parameters[0].equals("Connection"))
+		else if(parameters[0].equals("Connection:"))
 		{
 			if(parameters.length != 2)
 			{
@@ -63,7 +63,7 @@ abstract public class Request {
 				this.keep_alive = true;
 			}
 		}
-		else if(parameters[0].equals("Cookie"))
+		else if(parameters[0].equals("Cookie:"))
 		{
 			parseCookies(str);
 		}

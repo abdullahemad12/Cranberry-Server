@@ -29,7 +29,6 @@ public class Helpers {
 	{
 		try 
 		{
-			@SuppressWarnings("unchecked")
 			GenericThread serverThread = new GenericThread((Callable<Server>)server);
 			serverThread.start();
 			return serverThread;

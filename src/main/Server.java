@@ -8,7 +8,7 @@ import java.util.concurrent.Callable;
 import lib.Client;
 import lib.RequestsProcessor;
 
-public class Server implements Callable {
+public class Server implements Callable<Server> {
 
 	
 	private RequestsProcessor requestsprocessor;
@@ -62,7 +62,7 @@ public class Server implements Callable {
 	}
 
 	/*Created for the testing*/
-	public Object call() throws Exception {
+	public Server call() throws Exception {
 		this.listen();
 		return this;
 	}

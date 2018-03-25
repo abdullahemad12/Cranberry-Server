@@ -79,7 +79,7 @@ public class RequestTest {
 	 * @throws NoSuchMethodException 
 	 */
 	@Test(timeout = 100)
-	public void RequestParseTest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+	public void GETRequestParseTest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
 	{
 		Client client = new Client(null, null);
 		Class<?> clientclass = client.getClass();
@@ -106,22 +106,7 @@ public class RequestTest {
 			assertTrue("The expected Host is \"127.0.0.1:1200\" got " +
 					request.getHost() +"instead" , request.getHost().equals("127.0.0.1:1200")); /*checks the http host*/
 			
-			/*
-			 * Creates Post and checks it's parameters for correct values
-			 * 
-			 *  
-			 */
-			request = (Request) method.invoke(client, postRequest);
-			assertTrue("The expected Url is \"/\" got " + request.getUrl()
-					+"instead" , request.getUrl().equals("/")); /*checks the URL*/
-			
-			assertTrue("The expected Version is \"HTTP/1.1\" got " +
-					request.getUrl() +"instead" , request.getVersion().equals("HTTP/1.1")); /*checks the http version*/
-
-			assertTrue("The expected Keep-alive is \"True\" got " +
-					request.isKeep_alive() +"instead" , request.isKeep_alive()); /*checks the http keep alive*/
-			assertTrue("The expected Host is \"127.0.0.1:1200\" got " +
-					request.getHost() +"instead" , request.getHost().equals("127.0.0.1:1200")); /*checks the http host*/
+		
 			
 			/*
 			 * Creates get request HTTP 1.0 and checks it's parameters for correct values
@@ -139,42 +124,97 @@ public class RequestTest {
 					request.isKeep_alive() +"instead" , !request.isKeep_alive()); /*checks the http keep alive*/
 			assertTrue("The expected Host is \"127.0.0.1\" got " +
 					request.getHost() +"instead" , request.getHost().equals("127.0.0.1")); /*checks the http host*/
+		
+	}
+	
+	
+	/**
+	 * Checks that the Request class parses the http post request correctly
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 */
+	@Test(timeout = 100)
+	public void PostRequestParseTest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+	{
+		Client client = new Client(null, null);
+		Class<?> clientclass = client.getClass();
 
-			
-			/*
-			 * Creates post request HTTP 1.0 and checks it's parameters for correct values
-			 * 
-			 *  
-			 */
-			request = (Request) method.invoke(client, postRequest1_0);
-			assertTrue("The expected Url is \"/form.php\" got " + request.getUrl()
-					+"instead" , request.getUrl().equals("/form.php")); /*checks the URL*/
-			
-			assertTrue("The expected Version is \"HTTP/1.0\" got " +
-					request.getUrl() +"instead" , request.getVersion().equals("HTTP/1.0")); /*checks the http version*/
+			Class<?>[] arr = new Class<?>[1];/*to suppress warning*/
+			arr[0] = String.class;
+			Method method =  clientclass.getDeclaredMethod("parseRequest", arr);
 
-			assertTrue("The expected Keep-alive is \"False\" got " +
-					request.isKeep_alive() +"instead" , !request.isKeep_alive()); /*checks the http keep alive*/
-			assertTrue("The expected Host is \"127.0.0.1\" got " +
-					request.getHost() +"instead" , request.getHost().equals("127.0.0.1")); /*checks the http host*/
-			
-			
-			/*
-			 * bad request checks that it throw an exception
-			 * 
-			 *  
-			 */
-			try
-			{
-				request = new Get(badrequest);
-				// this line shouldn't be reached
-				fail("excepts it to throw a bad request exception");
-			}
-			catch(BadRequestException e)
-			{
+			method.setAccessible(true);
+		
+		/*
+		 * Creates Post and checks it's parameters for correct values
+		 * 
+		 *  
+		 */
+		Request request = (Request) method.invoke(client, postRequest);
+		assertTrue("The expected Url is \"/\" got " + request.getUrl()
+				+"instead" , request.getUrl().equals("/")); /*checks the URL*/
+		
+		assertTrue("The expected Version is \"HTTP/1.1\" got " +
+				request.getUrl() +"instead" , request.getVersion().equals("HTTP/1.1")); /*checks the http version*/
 
-			}
-			
+		assertTrue("The expected Keep-alive is \"True\" got " +
+				request.isKeep_alive() +"instead" , request.isKeep_alive()); /*checks the http keep alive*/
+		assertTrue("The expected Host is \"127.0.0.1:1200\" got " +
+				request.getHost() +"instead" , request.getHost().equals("127.0.0.1:1200")); /*checks the http host*/
+		
+		
+
+		/*
+		 * Creates post request HTTP 1.0 and checks it's parameters for correct values
+		 * 
+		 *  
+		 */
+		request = (Request) method.invoke(client, postRequest1_0);
+		assertTrue("The expected Url is \"/form.php\" got " + request.getUrl()
+				+"instead" , request.getUrl().equals("/form.php")); /*checks the URL*/
+		
+		assertTrue("The expected Version is \"HTTP/1.0\" got " +
+				request.getUrl() +"instead" , request.getVersion().equals("HTTP/1.0")); /*checks the http version*/
+
+		assertTrue("The expected Keep-alive is \"False\" got " +
+				request.isKeep_alive() +"instead" , !request.isKeep_alive()); /*checks the http keep alive*/
+		assertTrue("The expected Host is \"127.0.0.1\" got " +
+				request.getHost() +"instead" , request.getHost().equals("127.0.0.1")); /*checks the http host*/
+	}
+	
+	
+	/** 
+	 * Checks that the Request Class throws exception on bad requests
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 */
+	@Test(timeout = 100)
+	public void BadRequestParseTest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+	{
+		
+		/*
+		 * bad request checks that it throw an exception
+		 * 
+		 *  
+		 */
+		try
+		{
+			@SuppressWarnings("unused")
+			Request request = new Get(badrequest);
+			// this line shouldn't be reached
+			fail("excepts it to throw a bad request exception");
+		}
+		catch(BadRequestException e)
+		{
+
+		}
+		
 	}
 	
 	/**

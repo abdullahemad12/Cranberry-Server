@@ -27,7 +27,7 @@ public class RequestsProcessor {
 		{
 			if(queue.size() > 0)
 			{
-				// TODO: process and then send a response
+				// TODO: Generate Response
 			}
 		}
 	}

@@ -64,4 +64,25 @@ public class Helpers {
 		}
 	}
 	
+	/**
+	 * bytes[], bytes[], int -> boolean
+	 * returns true if the first n bytes of each array are the same
+	 * @return
+	 */
+	public boolean bytesCmp(byte[] arr1, byte arr2[], int n)
+	{
+		if(arr1.length < n || arr2.length < n)
+		{
+			return false;
+		}
+		
+		for(int i = 0; i < n; i++)
+		{
+			if(arr1[i] != arr2[i])
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 }

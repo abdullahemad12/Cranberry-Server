@@ -48,7 +48,17 @@ abstract public class Request {
 			{
 				throw new BadRequestException();
 			}
-			this.url = parameters[1];
+			
+			// adjusts the correct relative path
+			if(parameters[1].equals("/"))
+			{
+				this.url = "public/index.php"; 
+			}
+			else
+			{
+				this.url = "public" + parameters[1];
+			}
+			
 			this.version = parameters[2];
 		}
 		// Host

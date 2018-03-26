@@ -2,17 +2,14 @@ package lib;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.channels.UnsupportedAddressTypeException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import exceptions.NotFoundException;
-import exceptions.UnsupportedMediaTypeException;
 
 /**
  * This represent a response for an http request
@@ -28,15 +25,21 @@ public class Response {
 	String mimeType; /*mime type of the requested resource*/
 	byte[] rawBuffer; /*holds the raw content read from directly from the file*/
 	byte[] Buffer; /*holds the response that gets sent to the user*/ 
-	public Response(String url, ArrayList<Parameter> cookies)
+	public Response(String url, ArrayList<Parameter> cookies) throws IOException, NotFoundException
 	{
 		this.url = url;
 		this.cookies = cookies;
+		this.LoadData();
 	}
 	
 	
 	/** 
-	 * Void -> void 
+	 *  void -> void
+	 *  This function loads The file that is going to be sent with the response
+	 *  
+	 *  Disclaimer: this Method was created based on: 
+	 *  https://dzone.com/articles/determining-file-types-java
+	 *  
 	 * @throws IOException 
 	 * @throws NotFoundException 
 	 * 
@@ -66,13 +69,14 @@ public class Response {
 	 *  uses the url and the cookies to generate an HTTP request 
 	 *  The result gets stored in the buffer
 	 *  
-	 *  Disclaimer: this Method was created based on: 
-	 *  https://dzone.com/articles/determining-file-types-java
+	 * 
 	 */
 	private void generateResponse()
 	{ 
-	     
-		   
+	    /*
+	     * TODO 
+	     */
+		
 	}
 	
 	/**

@@ -11,12 +11,12 @@ import java.lang.reflect.Method;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import lib.Client;
 import lib.Get;
 import lib.Post;
 import lib.Request;
-import lib.RequestsProcessor;
 import main.Server;
+import model.Client;
+import model.RequestsProcessor;
 
 import org.junit.Test;
 

@@ -5,8 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Callable;
 
-import lib.Client;
-import lib.RequestsProcessor;
+import model.Client;
+import model.RequestsProcessor;
 
 public class Server implements Callable<Server> {
 

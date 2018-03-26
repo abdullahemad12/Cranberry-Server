@@ -1,9 +1,13 @@
-package lib;
+package model;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+
+import lib.Get;
+import lib.Post;
+import lib.Request;
 
 import exceptions.BadRequestException;
 

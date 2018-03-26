@@ -1,6 +1,8 @@
-package lib;
+package model;
 
 import java.util.ArrayList;
+
+import lib.Request;
 
 public class RequestsProcessor {
 

@@ -41,32 +41,32 @@ public class RequestTest {
 		Class<?> clientclass = client.getClass();
 		try {
 
-			
-			Class<?>[] arr = new Class<?>[1];/*to suppress warning*/
+			Class<?>[] arr = new Class<?>[2];/*to suppress warning*/
 			arr[0] = String.class;
+			arr[1] = Socket.class;
 			Method method =  clientclass.getDeclaredMethod("parseRequest", arr);
 
 			method.setAccessible(true);
 			
 			// checks that it will reject arbitrary string
-			Request request = (Request) method.invoke(client, "blblbl");
+			Request request = (Request) method.invoke(client, "blblbl", null);
 			
 			
 			assertNull("Expects a NULL request", request);
 			 
 			//checks that it will return a Get object
-			request = (Request) method.invoke(client, getRequest);
+			request = (Request) method.invoke(client, getRequest, null);
 			assertTrue("Expects a Get Object", request instanceof Get);
 
 			// checks that it will return a Get object
-			request = (Request) method.invoke(client, postRequest);
+			request = (Request) method.invoke(client, postRequest, null);
 			assertTrue("Expects a Get Object", request instanceof Post);
 
 			
 		} catch (Exception e)
 		{
-			fail("An Exception was thrown");
 			e.printStackTrace();
+			fail("An Exception was thrown");
 		}
 	}
 	
@@ -84,8 +84,9 @@ public class RequestTest {
 		Client client = new Client(null, null);
 		Class<?> clientclass = client.getClass();
 
-			Class<?>[] arr = new Class<?>[1];/*to suppress warning*/
+			Class<?>[] arr = new Class<?>[2];/*to suppress warning*/
 			arr[0] = String.class;
+			arr[1] = Socket.class;
 			Method method =  clientclass.getDeclaredMethod("parseRequest", arr);
 
 			method.setAccessible(true);
@@ -94,7 +95,7 @@ public class RequestTest {
 			 *  Creates a Get object and checks it's parameters for correct values
 			 *  
 			 */
-			Request request = (Request) method.invoke(client, getRequest);
+			Request request = (Request) method.invoke(client, getRequest, null);
 			assertTrue("The expected Url is \"/\" got " + request.getUrl()
 					+"instead" , request.getUrl().equals("/")); /*checks the URL*/
 			
@@ -113,7 +114,7 @@ public class RequestTest {
 			 * 
 			 *  
 			 */
-			request = (Request) method.invoke(client, getRequest1_0);
+			request = (Request) method.invoke(client, getRequest1_0, null);
 			assertTrue("The expected Url is \"/blog.html\" got " + request.getUrl()
 					+"instead" , request.getUrl().equals("/blog.html")); /*checks the URL*/
 			
@@ -142,8 +143,9 @@ public class RequestTest {
 		Client client = new Client(null, null);
 		Class<?> clientclass = client.getClass();
 
-			Class<?>[] arr = new Class<?>[1];/*to suppress warning*/
+			Class<?>[] arr = new Class<?>[2];/*to suppress warning*/
 			arr[0] = String.class;
+			arr[1] = Socket.class;
 			Method method =  clientclass.getDeclaredMethod("parseRequest", arr);
 
 			method.setAccessible(true);
@@ -153,7 +155,7 @@ public class RequestTest {
 		 * 
 		 *  
 		 */
-		Request request = (Request) method.invoke(client, postRequest);
+		Request request = (Request) method.invoke(client, postRequest, null);
 		assertTrue("The expected Url is \"/\" got " + request.getUrl()
 				+"instead" , request.getUrl().equals("/")); /*checks the URL*/
 		
@@ -172,7 +174,7 @@ public class RequestTest {
 		 * 
 		 *  
 		 */
-		request = (Request) method.invoke(client, postRequest1_0);
+		request = (Request) method.invoke(client, postRequest1_0, null);
 		assertTrue("The expected Url is \"/form.php\" got " + request.getUrl()
 				+"instead" , request.getUrl().equals("/form.php")); /*checks the URL*/
 		
@@ -206,13 +208,13 @@ public class RequestTest {
 		try
 		{
 			@SuppressWarnings("unused")
-			Request request = new Get(badrequest);
+			Request request = new Get(badrequest, null);
 			// this line shouldn't be reached
 			fail("excepts it to throw a bad request exception");
 		}
 		catch(BadRequestException e)
 		{
-
+			
 		}
 		
 	}
@@ -256,7 +258,7 @@ public class RequestTest {
 	        {
 	        	outToServer.writeBytes(postRequest + '\n');	
 	        }
-        	Thread.sleep(100);
+        	Thread.sleep(5);
 
 	       
         }

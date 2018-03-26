@@ -44,7 +44,7 @@ public class Client extends Thread {
 
 				try 
 				{
-					requestprocessor.enqueueRequest(parseRequest(request));
+					requestprocessor.enqueueRequest(parseRequest(request, socket));
 				}
 				catch (BadRequestException e) 
 				{
@@ -69,18 +69,18 @@ public class Client extends Thread {
 	 * @return
 	 * @throws BadRequestException 
 	 */
-	private static Request parseRequest(String req) throws BadRequestException
+	private static Request parseRequest(String req, Socket socket) throws BadRequestException
 	{
 		Request request = null;
 		if(req.matches("GET (.|\n|\r)*"))
 		{
 			
-			request = new Get(req);
+			request = new Get(req, socket);
 		}
 		else if(req.matches("POST (.|\n|\r)*"))
 		{
 			
-			request = new Post(req);
+			request = new Post(req, socket);
 		}
 
 		return request;

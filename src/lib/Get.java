@@ -1,12 +1,14 @@
 package lib;
 
+import java.net.Socket;
+
 import exceptions.BadRequestException;
 
 public class Get extends Request{
 
 	
-	public Get(String request) throws BadRequestException {
-		super(request);
+	public Get(String request, Socket socket) throws BadRequestException {
+		super(request, socket);
 		// TODO: parse parameters
 	}
 

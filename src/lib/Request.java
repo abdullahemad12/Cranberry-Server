@@ -1,17 +1,21 @@
 package lib;
 
+import java.net.Socket;
 import java.util.ArrayList;
 
 import exceptions.BadRequestException;
 
 abstract public class Request {
+	
+	private Socket socket;
 	private String url; 
 	private String version;
 	private boolean keep_alive;
 	private String host;
 	private ArrayList<Parameter> cookies;
-	public Request(String request) throws BadRequestException
+	public Request(String request, Socket socket) throws BadRequestException
 	{
+		this.socket = socket;
 		this.keep_alive = false;
 		String[] reqLines = request.split("\\r?\\n");
 		// extracts information from each line
@@ -22,6 +26,11 @@ abstract public class Request {
 	
 	}
 
+	
+	public Socket getSocket()
+	{
+		return this.socket;
+	}
 	/**
 	 * String -> void
 	 * parses a line from a HTTP request and sets instance variables accordingly

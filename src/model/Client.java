@@ -48,7 +48,6 @@ public class Client extends Thread {
 
 				try 
 				{
-					System.out.println(request);
 					requestprocessor.enqueueRequest(parseRequest(request, socket));
 				}
 				catch (BadRequestException e) 

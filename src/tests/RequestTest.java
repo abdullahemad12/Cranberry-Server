@@ -281,10 +281,6 @@ public class RequestTest {
         // checks the queue of the server
         for(Request req : requestsList)
         {
-        	System.out.println(req.getUrl());
-        	System.out.println(req.getVersion());
-        	System.out.println(req.getVersion());
-
         	if(i % 2 == 0 && !(req instanceof Get))
         	{
         		fail("The Queue does not have the correct order");

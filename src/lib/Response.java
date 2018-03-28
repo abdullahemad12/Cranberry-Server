@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 import exceptions.NotFoundException;
@@ -82,6 +82,8 @@ public class Response {
 		for (int i = 0; i < data.length; i++) {
 			buffer[i] = Byte.valueOf(data[i]);
 		}
+		
+		new String(buffer, StandardCharsets.UTF_8);
 	}
 
 	/**
@@ -92,6 +94,7 @@ public class Response {
 	 * @throws IOException
 	 */
 	public void sendResponse(Socket socket) throws IOException {
+		
 		generateResponse();
 		socket.getOutputStream().write(buffer);
 		buffer = null;

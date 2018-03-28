@@ -1,16 +1,14 @@
 package model;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import exceptions.NotFoundException;
 
 import lib.Request;
 import lib.Response;
 
-public class RequestsProcessor {
+public class RequestsProcessor extends Thread{
 
-	private ArrayList<Request> queue;
+	private volatile ArrayList<Request> queue;
 	
 	public RequestsProcessor()
 	{
@@ -27,7 +25,7 @@ public class RequestsProcessor {
 	}
 	
 	
-	void run() throws IOException, NotFoundException
+	public void run()
 	{
 		while(true)
 		{
@@ -41,7 +39,7 @@ public class RequestsProcessor {
 				}
 				catch(Exception e)
 				{
-					
+					e.printStackTrace();
 				}
 			}
 		}

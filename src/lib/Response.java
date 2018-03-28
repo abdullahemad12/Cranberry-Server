@@ -74,7 +74,7 @@ public class Response {
 
 		Date dateTemp = new Date();
 		String[] data = new String[5];
-		data[0] = dateTemp.toString();
+		data[0] = "Date: "+dateTemp.toString()+"\r\n";
 		data[1] = "Server: cranberry/1.0\r\n";
 		data[2] = "Content-Length: " + rawBuffer.length + "\r\n";
 		data[3] = "Connection: closed\r\n";

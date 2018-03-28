@@ -2,6 +2,7 @@ package tests;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.concurrent.Callable;
 
@@ -69,7 +70,7 @@ public class Helpers {
 	 * returns true if the first n bytes of each array are the same
 	 * @return
 	 */
-	public boolean bytesCmp(byte[] arr1, byte arr2[], int n)
+	public static boolean bytesCmp(byte[] arr1, byte arr2[], int n)
 	{
 		if(arr1.length < n || arr2.length < n)
 		{
@@ -84,5 +85,31 @@ public class Helpers {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * String -> Boolean
+	 * @throws UnsupportedEncodingException 
+	 */
+	public static boolean validateHeader(byte[] res) throws UnsupportedEncodingException
+	{
+		String header = new String(res, "UTF-8");
+		
+		String[] lines = header.split("\\r\\n");
+		int count = 0;
+		for(int i = 0; i < lines.length; i++)
+		{
+			String[] str = lines[i].split(" ");
+			if(str[0].equals("HTTP/1.1") || str[0].equals("Date:") || str[0].equals("Server:") 
+					|| str[0].equals("Last-Modified:") || str[0].equals("Content-Length:")
+					|| str[0].equals("Content-Type:") || str[0].equals("Connection:"))
+			{
+				count++;
+			}
+			System.out.println(lines[i]);
+		}
+		
+		
+		return count == 7;
 	}
 }

@@ -118,8 +118,8 @@ public class ResponseTest {
     
         
         
-        String httpreq = "HTTP/1.1 200 OK\r\nDate: Mon, 27 Jul 2009 12:28:53 GMT\r\nServer: Cranberry/1.1\r\nLast-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\nContent-Length: 88\r\nContent-Type: text/html\r\nConnection: Closed\r\n";
-        byte[] test = httpreq.getBytes();
+        //String httpreq = "HTTP/1.1 200 OK\r\nDate: Mon, 27 Jul 2009 12:28:53 GMT\r\nServer: Cranberry/1.1\r\nLast-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\nContent-Length: 88\r\nContent-Type: text/html\r\nConnection: Closed\r\n";
+        //byte[] test = httpreq.getBytes();
        
         
         //assertTrue("Doesn't match",  Helpers.validateHeader(test));

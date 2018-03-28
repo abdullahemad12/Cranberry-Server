@@ -74,6 +74,10 @@ public class Helpers {
 	{
 		if(arr1.length < n || arr2.length < n)
 		{
+			System.out.println("size: " + arr1.length);
+
+			System.out.println("size: " + arr2.length);
+
 			return false;
 		}
 		

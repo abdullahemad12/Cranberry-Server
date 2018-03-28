@@ -80,7 +80,7 @@ public class Response {
 		data[2] = "Content-Length: " + rawBuffer.length + "\r\n";
 		data[3] = "Connection: closed\r\n";
 		data[4] = "Content-Type: " + mimeType + "\r\n\r\n";
-		String tmp = null;
+		String tmp = "";
 		for (int i = 0; i < data.length; i++) {
 			 tmp += data[i];
 		}

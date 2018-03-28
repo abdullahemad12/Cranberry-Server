@@ -48,12 +48,22 @@ public class Client extends Thread {
 
 				try 
 				{
-					requestprocessor.enqueueRequest(parseRequest(request, socket));
+					requestprocessor.getSemaphore().acquire();
+					Request req = parseRequest(request, socket);
+					if(req != null)
+					{
+						requestprocessor.enqueueRequest(req);
+					}
+					requestprocessor.getSemaphore().release();
 				}
 				catch (BadRequestException e) 
 				{
 					System.out.println(e.getMessage());
 					// TODO: send badly formatted request error code
+				}
+				catch(InterruptedException e)
+				{
+					System.out.println(e.getMessage());
 				}
 			} 
 			catch (IOException e1) 

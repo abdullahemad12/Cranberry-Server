@@ -96,8 +96,8 @@ public class RequestTest {
 			 *  
 			 */
 			Request request = (Request) method.invoke(client, getRequest, null);
-			assertTrue("The expected Url is \"/\" got " + request.getUrl()
-					+"instead" , request.getUrl().equals("/")); /*checks the URL*/
+			assertTrue("The expected Url is \"public/index.php\" got " + request.getUrl()
+					+"instead" , request.getUrl().equals("public/index.php")); /*checks the URL*/
 			
 			assertTrue("The expected Version is \"HTTP/1.1\" got " +
 					request.getUrl() +"instead" , request.getVersion().equals("HTTP/1.1")); /*checks the http version*/
@@ -115,8 +115,8 @@ public class RequestTest {
 			 *  
 			 */
 			request = (Request) method.invoke(client, getRequest1_0, null);
-			assertTrue("The expected Url is \"/blog.html\" got " + request.getUrl()
-					+"instead" , request.getUrl().equals("/blog.html")); /*checks the URL*/
+			assertTrue("The expected Url is \"public/blog.html\" got " + request.getUrl()
+					+"instead" , request.getUrl().equals("public/blog.html")); /*checks the URL*/
 			
 			assertTrue("The expected Version is \"HTTP/1.0\" got " +
 					request.getUrl() +"instead" , request.getVersion().equals("HTTP/1.0")); /*checks the http version*/
@@ -156,8 +156,8 @@ public class RequestTest {
 		 *  
 		 */
 		Request request = (Request) method.invoke(client, postRequest, null);
-		assertTrue("The expected Url is \"/\" got " + request.getUrl()
-				+"instead" , request.getUrl().equals("/")); /*checks the URL*/
+		assertTrue("The expected Url is \"public/index.php\" got " + request.getUrl()
+				+"instead" , request.getUrl().equals("public/index.php")); /*checks the URL*/
 		
 		assertTrue("The expected Version is \"HTTP/1.1\" got " +
 				request.getUrl() +"instead" , request.getVersion().equals("HTTP/1.1")); /*checks the http version*/
@@ -175,8 +175,8 @@ public class RequestTest {
 		 *  
 		 */
 		request = (Request) method.invoke(client, postRequest1_0, null);
-		assertTrue("The expected Url is \"/form.php\" got " + request.getUrl()
-				+"instead" , request.getUrl().equals("/form.php")); /*checks the URL*/
+		assertTrue("The expected Url is \"public/form.php\" got " + request.getUrl()
+				+"instead" , request.getUrl().equals("public/form.php")); /*checks the URL*/
 		
 		assertTrue("The expected Version is \"HTTP/1.0\" got " +
 				request.getUrl() +"instead" , request.getVersion().equals("HTTP/1.0")); /*checks the http version*/

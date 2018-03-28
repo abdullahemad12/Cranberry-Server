@@ -2,17 +2,16 @@ package tests;
 
 import static org.junit.Assert.*;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
 
 import lib.Response;
 import main.Server;
@@ -25,12 +24,13 @@ public class ResponseTest {
 
 		private static String getIndex = "GET / HTTP/1.1\r\nHost: 127.0.0.1:1200\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9,ar;q=0.8\r\n";
 		private static String getImage = "GET /test.jpg HTTP/1.1\r\nHost: 127.0.0.1:1200\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9,ar;q=0.8\r\n";
+		private static String getNonExistent = "GET /nonexistentfile.php HTTP/1.1\r\nHost: 127.0.0.1:1200\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9,ar;q=0.8\r\n";
 
 		@Test(timeout = 1000)
 		public void LoadFileTest() throws IOException, NotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
 			
 			// Get the private method from the response class
-			Response response = new Response("index.html", null);
+			Response response = new Response("public/index.php", null);
 			Class<?> responseClass = response.getClass();
 			
 			Class<?>[] arr = null;
@@ -48,7 +48,7 @@ public class ResponseTest {
 	        
 	        String actual = new String(rawBuffer, "US-ASCII");
 	        
-	        byte[] encoded = Files.readAllBytes(Paths.get("index.html"));
+	        byte[] encoded = Files.readAllBytes(Paths.get("public/index.php"));
 	        String expected = new String(encoded, "US-ASCII");
 	                
 	        assertTrue("The Two Strings Didn't Match", actual.equals(expected));
@@ -58,7 +58,7 @@ public class ResponseTest {
 		public void mimeTypeTest() throws IOException, NotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
 		{
 			// Get the private method from the response class
-			Response response = new Response("index.html", null);
+			Response response = new Response("public/index.php", null);
 			Class<?> responseClass = response.getClass();
 			
 			Class<?>[] arr = null;
@@ -79,7 +79,7 @@ public class ResponseTest {
 	        
 	        
 	        // tries loading an image
-	        Response response1 = new Response("test.jpg", null);
+	        Response response1 = new Response("public/test.jpg", null);
 			Class<?> responseClass1 = response1.getClass();
 			
 			
@@ -98,8 +98,9 @@ public class ResponseTest {
 		}
 		
 	}
+		
 	@Test(timeout = 1000)
-	public void HTTPresponseTest(String url) throws IOException, InterruptedException
+	public void HTTPresponseTest() throws IOException, InterruptedException
 	{
 		
 		// starts up the server on port 1200
@@ -114,10 +115,18 @@ public class ResponseTest {
         	clientSocket[i] = new Socket("127.0.0.1", 1200); 
         	Thread.sleep(10);
         }
+    
         
+        
+        String httpreq = "HTTP/1.1 200 OK\r\nDate: Mon, 27 Jul 2009 12:28:53 GMT\r\nServer: Cranberry/1.1\r\nLast-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\nContent-Length: 88\r\nContent-Type: text/html\r\nConnection: Closed\r\n";
+        byte[] test = httpreq.getBytes();
+       
+        
+        assertTrue("Doesn't match",  Helpers.validateHeader(test));
         /*TODO: load the expected response Response*/
+        byte[] indexPage = Files.readAllBytes(Paths.get("public/index.php"));
+        byte[] imageFile = Files.readAllBytes(Paths.get("public/test.jpg"));
         
-        String http_response = "HTTP/1.1 200 OK \r\n";
         for(int i = 0; i < clientSocket.length; i++)
         {
         	if(i % 2 == 0)
@@ -127,8 +136,17 @@ public class ResponseTest {
 		        	outToServer.writeBytes(getIndex + '\n'); 
 		        	  InputStream stream = clientSocket[i].getInputStream();
 		        	  byte[] data = new byte[1000];
-		        	  int count = stream.read(data);
+		        	  stream.read(data);
+		        	  assertTrue("Incorrect Header Fields", Helpers.validateHeader(data));
+		        	  
+		        	  // compares the body
+		      		  String response = new String(data, "UTF-8");
+		      		  String body = response.split("\\r\\n\\r\\n")[1];
+		      		  
+		      		  byte[] bodyBuffer = body.getBytes();
 		        	  // compare the expected responses if false return false
+		      		  boolean cmpType = Helpers.bytesCmp(bodyBuffer, indexPage, indexPage.length);
+		      		  assertTrue("Incorrect Buffer", cmpType);
         	}
         	else
         	{
@@ -138,10 +156,52 @@ public class ResponseTest {
 		        	outToServer.writeBytes(getImage + '\n'); 
 		        	  InputStream stream = clientSocket[i].getInputStream();
 		        	  byte[] data = new byte[1000];
-		        	  int count = stream.read(data);
+		        	  stream.read(data);
+		        	  assertTrue("Incorrect Header Fields", Helpers.validateHeader(data));
+		        	  
+		        	  // compares the body
+		      		  String response = new String(data, "UTF-8");
+		      		  String body = response.split("\\r\\n\\r\\n")[1];
+		      		  
+		      		  byte[] bodyBuffer = body.getBytes();
 		        	  // compare the expected responses if false return false
-        	}
+		      		  boolean cmpType = Helpers.bytesCmp(bodyBuffer, imageFile, imageFile.length);
+		      		  assertTrue("Incorrect Buffer", cmpType);        	}
         }
+	}
+	
+	@Test (timeout = 1000)
+	public void NotFoundTest() throws IOException
+	{
+        
+    	// starts up the server on port 1200
+		Server server = new Server(1200);
+		GenericThread serverThread = new GenericThread(server);
+		serverThread.start();
 		
+        Socket clientSocket = new Socket("127.0.0.1", 1200); 
+        
+        byte[] FileNotFound = Files.readAllBytes(Paths.get("public/notfound.php"));
+        
+        DataOutputStream outToServer = 
+			      new DataOutputStream(clientSocket.getOutputStream());
+
+    	outToServer.writeBytes(getNonExistent + '\n'); 
+
+    	InputStream stream = clientSocket.getInputStream();
+   	  	byte[] data = new byte[1000];
+   	  	stream.read(data);
+   	  	assertTrue("Incorrect Header Fields", Helpers.validateHeader(data));
+   	  	
+   	  	  // compares the body
+		  String response = new String(data, "UTF-8");
+		  String body = response.split("\\r\\n\\r\\n")[1];
+		  
+		  byte[] bodyBuffer = body.getBytes();
+		  // compare the expected responses if false return false
+		  boolean cmpType = Helpers.bytesCmp(bodyBuffer, FileNotFound, FileNotFound.length);
+		  assertTrue("Incorrect Buffer", cmpType);  
+		  clientSocket.close();
+   	  
 	}
 }

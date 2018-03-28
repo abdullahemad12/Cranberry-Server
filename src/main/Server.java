@@ -31,7 +31,8 @@ public class Server implements Callable<Server> {
 	public void listen() throws IOException
 	{
 		System.out.println("Listening on Port: " + this.serverSocket.getLocalPort() + " ...");
-		  while(true) { 
+		requestsprocessor.start();
+		 while(true) { 
 			  
 	            Socket connectionSocket = serverSocket.accept();
 	            Client client = new Client(connectionSocket, this.requestsprocessor);

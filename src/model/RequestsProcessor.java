@@ -2,11 +2,13 @@ package model;
 
 import java.util.ArrayList;
 
+
 import lib.Request;
+import lib.Response;
 
-public class RequestsProcessor {
+public class RequestsProcessor extends Thread{
 
-	private ArrayList<Request> queue;
+	private volatile ArrayList<Request> queue;
 	
 	public RequestsProcessor()
 	{
@@ -17,19 +19,28 @@ public class RequestsProcessor {
 	{
 		this.queue.add(req);
 	}
-	private Request dequeueRequest(Request req)
+	private Request dequeueRequest()
 	{
 		return this.queue.remove(0);
 	}
 	
 	
-	void run()
+	public void run()
 	{
 		while(true)
 		{
 			if(queue.size() > 0)
 			{
-				// TODO: Generate Response
+				Request request = dequeueRequest(); 
+				try
+				{
+					Response response = new Response(request.getUrl(), request.getCookies());
+					response.sendResponse(request.getSocket());
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 	}

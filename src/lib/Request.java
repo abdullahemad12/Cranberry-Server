@@ -84,7 +84,7 @@ abstract public class Request {
 		}
 		else if(parameters[0].equals("Cookie:"))
 		{
-			parseCookies(str);
+			//parseCookies(str);
 		}
 	}
 
@@ -128,5 +128,8 @@ abstract public class Request {
 	public String getHost() {
 		return host;
 	}
-
+	public ArrayList<Parameter> getCookies()
+	{
+		return this.cookies;
+	}
 }

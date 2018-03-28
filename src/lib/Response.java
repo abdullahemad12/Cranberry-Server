@@ -80,7 +80,7 @@ public class Response {
 		data[2] = "Content-Length: " + rawBuffer.length + "\r\n";
 		data[3] = "Connection: closed\r\n";
 		data[4] = "Content-Type: " + mimeType + "\r\n\r\n";
-		String tmp = Arrays.toString(data).replaceAll("\\[|\\]" ,"").replaceAll("[,]", " ");
+		String tmp = Arrays.toString(data).replaceAll("\\[|\\]" ,"").replaceAll("[,]", "");
 		byte[] tmpByte = tmp.getBytes();
 		buffer = new byte[tmpByte.length+rawBuffer.length];
 		for (int i = 0; i < buffer.length; i++) {

@@ -85,7 +85,7 @@ public class Response {
 		for (int i = 0; i < buffer.length; i++) {
 			if ( i < tmpByte.length )
 			buffer[i] = tmpByte[i];
-			else buffer[i] = rawBuffer[i] ;
+			else buffer[i] = rawBuffer[i-(tmpByte.length)] ;
 		}
 	}
 

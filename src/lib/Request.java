@@ -128,5 +128,8 @@ abstract public class Request {
 	public String getHost() {
 		return host;
 	}
-
+	public ArrayList<Parameter> getCookies()
+	{
+		return this.cookies;
+	}
 }

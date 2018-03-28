@@ -97,10 +97,9 @@ public class Response {
 	}
 
 	/**
-	 * Socket -> void Sends a Generated Response to the destination socket
-	 * 
-	 * @param socket:
-	 *            the destination TCP socket
+	 * Socket -> void 
+	 * Sends a Generated Response to the destination socket
+	 * @param socket:the destination TCP socket
 	 * @throws IOException
 	 */
 	public void sendResponse(Socket socket) throws IOException {
@@ -110,7 +109,16 @@ public class Response {
 		buffer = null;
 	}
 	
-	
+	/**
+	 * Socket -> void
+	 * Sends 404 Not found to the client
+	 * @param Socket: the destination TCP socket
+	 *  @throws IOException
+	 */
+	public void sendNotFoundError(Socket socket)
+	{
+		//TODO: Moghazi
+	}
 	
 	
 

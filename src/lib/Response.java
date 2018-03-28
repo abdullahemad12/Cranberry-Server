@@ -73,7 +73,7 @@ public class Response {
 	private void generateResponse() {
 
 		Date dateTemp = new Date();
-		String[] data = new String[5];
+		String[] data = new String[7];
 		data[0] = "HTTP/1.1 200 OK\r\n";
 		data[1] = "Date: "+dateTemp.toString()+"\r\n";
 		data[2] = "Last-Modified: "+dateTemp.toString()+"\r\n";

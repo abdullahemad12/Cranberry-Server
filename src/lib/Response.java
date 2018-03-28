@@ -82,7 +82,6 @@ public class Response {
 		for (int i = 0; i < data.length; i++) {
 			buffer[i] = Byte.valueOf(data[i]);
 		}
-
 	}
 
 	/**
@@ -90,9 +89,12 @@ public class Response {
 	 * 
 	 * @param socket:
 	 *            the destination TCP socket
+	 * @throws IOException
 	 */
-	public void sendResponse(Socket socket) {
-
+	public void sendResponse(Socket socket) throws IOException {
+		generateResponse();
+		socket.getOutputStream().write(buffer);
+		buffer = null;
 	}
 
 }

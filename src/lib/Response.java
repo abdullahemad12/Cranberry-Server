@@ -74,11 +74,13 @@ public class Response {
 
 		Date dateTemp = new Date();
 		String[] data = new String[5];
-		data[0] = "Date: "+dateTemp.toString()+"\r\n";
-		data[1] = "Server: cranberry/1.0\r\n";
-		data[2] = "Content-Length: " + rawBuffer.length + "\r\n";
-		data[3] = "Connection: closed\r\n";
-		data[4] = "Content-Type: " + mimeType + "\r\n\r\n";
+		data[0] = "HTTP/1.1 200 OK\r\n";
+		data[1] = "Date: "+dateTemp.toString()+"\r\n";
+		data[2] = "Last-Modified: "+dateTemp.toString()+"\r\n";
+		data[3] = "Server: cranberry/1.0\r\n";
+		data[4] = "Content-Length: " + rawBuffer.length + "\r\n";
+		data[5] = "Connection: closed\r\n";
+		data[6] = "Content-Type: " + mimeType + "\r\n\r\n";
 		String tmp = "";
 		for (int i = 0; i < data.length; i++) {
 			 tmp += data[i];

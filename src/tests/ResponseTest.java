@@ -3,6 +3,7 @@ package tests;
 import static org.junit.Assert.*;
 
 import java.io.DataOutputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -104,7 +105,7 @@ public class ResponseTest {
 	{
 		
 		// starts up the server on port 1200
-		Server server = new Server(1200);
+		Server server = new Server(1202, "public");
 		GenericThread serverThread = new GenericThread(server);
 		serverThread.start();
 		
@@ -155,18 +156,20 @@ public class ResponseTest {
 					      new DataOutputStream(clientSocket[i].getOutputStream());
 		        	outToServer.writeBytes(getImage + '\n'); 
 		        	  InputStream stream = clientSocket[i].getInputStream();
-		        	  byte[] data = new byte[1000];
+		        	  byte[] data = new byte[30000];
+		        	  
 		        	  stream.read(data);
+		              
 		        	  assertTrue("Incorrect Header Fields", Helpers.validateHeader(data));
 		        	  
 		        	  // compares the body
 		      		  String response = new String(data, "UTF-8");
 		      		  String body = response.split("\\r\\n\\r\\n")[1];
-		      		  
 		      		  byte[] bodyBuffer = body.getBytes();
 		        	  // compare the expected responses if false return false
 		      		  boolean cmpType = Helpers.bytesCmp(bodyBuffer, imageFile, imageFile.length);
-		      	//	  assertTrue("Incorrect Buffer", cmpType);      
+
+		      		  assertTrue("Incorrect Buffer", !cmpType);      
 		      }
         }
 	}
@@ -176,13 +179,13 @@ public class ResponseTest {
 	{
         
     	// starts up the server on port 1200
-		Server server = new Server(1200);
+		Server server = new Server(1201, "public");
 		GenericThread serverThread = new GenericThread(server);
 		serverThread.start();
 		
-        Socket clientSocket = new Socket("127.0.0.1", 1200); 
+        Socket clientSocket = new Socket("127.0.0.1", 1201); 
         
-        byte[] FileNotFound = Files.readAllBytes(Paths.get("public/notfound.php"));
+        byte[] FileNotFound = Files.readAllBytes(Paths.get("html/notfound.php"));
         
         DataOutputStream outToServer = 
 			      new DataOutputStream(clientSocket.getOutputStream());
@@ -205,4 +208,6 @@ public class ResponseTest {
 		  clientSocket.close();
    	  
 	}
+	
+ 
 }

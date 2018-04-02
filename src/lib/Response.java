@@ -28,8 +28,21 @@ public class Response {
 	String mimeType; /* mime type of the requested resource */
 	byte[] rawBuffer; /* holds the raw content read from directly from the file */
 	byte[] buffer; /* holds the response that gets sent to the user */
-
+	int statusCode;
+	String status;
 	public Response(String url, ArrayList<Parameter> cookies) throws IOException, NotFoundException {
+		// file not found
+		if(url == null)
+		{
+			statusCode = 404;
+			status = "Not Found";
+			url = "html/notfound.php";
+		}
+		else
+		{
+			statusCode = 200;
+			status = "OK";
+		}
 		this.url = url;
 		this.cookies = cookies;
 		this.LoadData();
@@ -59,6 +72,19 @@ public class Response {
 		final URLConnection connection = url.openConnection();
 		this.mimeType = connection.getContentType();
 
+		// handles unknown content
+		if(this.mimeType.equals("content/unknown"))
+		{
+			// checks the extension
+			String[] temp = this.url.split("\\/");
+			String[] destarr = temp[temp.length-1].split("\\.");
+			String extension = destarr[destarr.length - 1];
+			if(extension.equals("php"))
+			{
+				this.mimeType = "text/html";
+			}
+		}
+		
 		// loads the file as to the raw buffer
 		this.rawBuffer = Files.readAllBytes(Paths.get(this.url));
 
@@ -74,7 +100,7 @@ public class Response {
 
 		Date dateTemp = new Date();
 		String[] data = new String[7];
-		data[0] = "HTTP/1.1 200 OK\r\n";
+		data[0] = "HTTP/1.1 " + this.statusCode + " " + this.status + "\r\n";
 		data[1] = "Date: "+dateTemp.toString()+"\r\n";
 		data[2] = "Last-Modified: "+dateTemp.toString()+"\r\n";
 		data[3] = "Server: cranberry/1.0\r\n";
@@ -107,17 +133,6 @@ public class Response {
 		generateResponse();
 		socket.getOutputStream().write(buffer);
 		buffer = null;
-	}
-	
-	/**
-	 * Socket -> void
-	 * Sends 404 Not found to the client
-	 * @param Socket: the destination TCP socket
-	 *  @throws IOException
-	 */
-	public void sendNotFoundError(Socket socket)
-	{
-		//TODO: Moghazi
 	}
 	
 	

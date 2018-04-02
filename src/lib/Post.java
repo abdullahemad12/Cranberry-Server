@@ -6,8 +6,8 @@ import exceptions.BadRequestException;
 
 public class Post extends Request{
 
-	public Post(String request, Socket socket) throws BadRequestException {
-		super(request, socket);
+	public Post(String request, Socket socket, String server_root) throws BadRequestException {
+		super(request, socket, server_root);
 	}
 
 	public Object CreateResponse()

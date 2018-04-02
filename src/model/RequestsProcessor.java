@@ -1,7 +1,10 @@
 package model;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
+
+import exceptions.NotFoundException;
 
 
 import lib.Request;
@@ -47,10 +50,17 @@ public class RequestsProcessor extends Thread{
 					Response response = new Response(request.getUrl(), request.getCookies());
 					response.sendResponse(request.getSocket());
 				}
-				catch(Exception e)
+				catch(NotFoundException | IOException e)
 				{
-					e.printStackTrace();
+					try {
+						Response response = new Response(null, null);
+						response.sendResponse(request.getSocket());
+					} catch (IOException | NotFoundException e1) {
+						e1.printStackTrace();
+					}
+					System.out.print(e.getMessage());
 				}
+			
 			}
 			
 			sem.release();

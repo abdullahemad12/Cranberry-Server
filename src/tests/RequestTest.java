@@ -37,29 +37,37 @@ public class RequestTest {
 	@Test(timeout = 100)
 	public void ParseRequestReturnTypeTest()
 	{
-		Client client = new Client(null, null);
+		Server server = null;
+		try {
+			server = new Server(1200, "public");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		Client client = new Client(null, null, server);
 		Class<?> clientclass = client.getClass();
 		try {
 
-			Class<?>[] arr = new Class<?>[2];/*to suppress warning*/
+			Class<?>[] arr = new Class<?>[3];/*to suppress warning*/
 			arr[0] = String.class;
 			arr[1] = Socket.class;
+			arr[2] = Server.class;
 			Method method =  clientclass.getDeclaredMethod("parseRequest", arr);
 
 			method.setAccessible(true);
 			
 			// checks that it will reject arbitrary string
-			Request request = (Request) method.invoke(client, "blblbl", null);
+			Request request = (Request) method.invoke(client, "blblbl", null,server);
 			
 			
 			assertNull("Expects a NULL request", request);
 			 
 			//checks that it will return a Get object
-			request = (Request) method.invoke(client, getRequest, null);
+			request = (Request) method.invoke(client, getRequest, null, server);
 			assertTrue("Expects a Get Object", request instanceof Get);
 
 			// checks that it will return a Get object
-			request = (Request) method.invoke(client, postRequest, null);
+			request = (Request) method.invoke(client, postRequest, null, server);
 			assertTrue("Expects a Get Object", request instanceof Post);
 
 			
@@ -81,12 +89,21 @@ public class RequestTest {
 	@Test(timeout = 100)
 	public void GETRequestParseTest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
 	{
-		Client client = new Client(null, null);
+
+		Server server = null;
+		try {
+			server = new Server(1220, "public");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		Client client = new Client(null, null, server);
 		Class<?> clientclass = client.getClass();
 
-			Class<?>[] arr = new Class<?>[2];/*to suppress warning*/
+			Class<?>[] arr = new Class<?>[3];/*to suppress warning*/
 			arr[0] = String.class;
 			arr[1] = Socket.class;
+			arr[2] = Server.class;
 			Method method =  clientclass.getDeclaredMethod("parseRequest", arr);
 
 			method.setAccessible(true);
@@ -95,7 +112,7 @@ public class RequestTest {
 			 *  Creates a Get object and checks it's parameters for correct values
 			 *  
 			 */
-			Request request = (Request) method.invoke(client, getRequest, null);
+			Request request = (Request) method.invoke(client, getRequest, null, server);
 			assertTrue("The expected Url is \"public/index.php\" got " + request.getUrl()
 					+"instead" , request.getUrl().equals("public/index.php")); /*checks the URL*/
 			
@@ -114,7 +131,7 @@ public class RequestTest {
 			 * 
 			 *  
 			 */
-			request = (Request) method.invoke(client, getRequest1_0, null);
+			request = (Request) method.invoke(client, getRequest1_0, null, server);
 			assertTrue("The expected Url is \"public/blog.html\" got " + request.getUrl()
 					+"instead" , request.getUrl().equals("public/blog.html")); /*checks the URL*/
 			
@@ -140,12 +157,21 @@ public class RequestTest {
 	@Test(timeout = 100)
 	public void PostRequestParseTest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
 	{
-		Client client = new Client(null, null);
+
+		Server server = null;
+		try {
+			server = new Server(1203, "public");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		Client client = new Client(null, null, server);
 		Class<?> clientclass = client.getClass();
 
-			Class<?>[] arr = new Class<?>[2];/*to suppress warning*/
+			Class<?>[] arr = new Class<?>[3];/*to suppress warning*/
 			arr[0] = String.class;
 			arr[1] = Socket.class;
+			arr[2] = Server.class;
 			Method method =  clientclass.getDeclaredMethod("parseRequest", arr);
 
 			method.setAccessible(true);
@@ -155,7 +181,7 @@ public class RequestTest {
 		 * 
 		 *  
 		 */
-		Request request = (Request) method.invoke(client, postRequest, null);
+		Request request = (Request) method.invoke(client, postRequest, null, server);
 		assertTrue("The expected Url is \"public/index.php\" got " + request.getUrl()
 				+"instead" , request.getUrl().equals("public/index.php")); /*checks the URL*/
 		
@@ -174,7 +200,7 @@ public class RequestTest {
 		 * 
 		 *  
 		 */
-		request = (Request) method.invoke(client, postRequest1_0, null);
+		request = (Request) method.invoke(client, postRequest1_0, null, server);
 		assertTrue("The expected Url is \"public/form.php\" got " + request.getUrl()
 				+"instead" , request.getUrl().equals("public/form.php")); /*checks the URL*/
 		
@@ -199,7 +225,7 @@ public class RequestTest {
 	@Test(timeout = 100)
 	public void BadRequestParseTest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
 	{
-		
+
 		/*
 		 * bad request checks that it throw an exception
 		 * 
@@ -208,7 +234,7 @@ public class RequestTest {
 		try
 		{
 			@SuppressWarnings("unused")
-			Request request = new Get(badrequest, null);
+			Request request = new Get(badrequest, null, "public");
 			// this line shouldn't be reached
 			fail("excepts it to throw a bad request exception");
 		}
@@ -232,7 +258,7 @@ public class RequestTest {
 	public void RequestsQueueTest() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InterruptedException {
 		
 		// starts up the server on port 1200
-		Server server = new Server(1200);
+		Server server = new Server(1205, "public");
 		GenericThread serverThread = new GenericThread(server);
 		serverThread.start();
 		
@@ -240,7 +266,7 @@ public class RequestTest {
         Socket[] clientSocket = new Socket[10]; 
         for(int i = 0; i < clientSocket.length; i++)
         {
-        	clientSocket[i] = new Socket("127.0.0.1", 1200); 
+        	clientSocket[i] = new Socket("127.0.0.1", 1205); 
         	Thread.sleep(10);
         }
         

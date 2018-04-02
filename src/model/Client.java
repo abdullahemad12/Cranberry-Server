@@ -8,6 +8,7 @@ import java.net.Socket;
 import lib.Get;
 import lib.Post;
 import lib.Request;
+import main.Server;
 
 import exceptions.BadRequestException;
 
@@ -15,8 +16,10 @@ public class Client extends Thread {
 
 	private Socket socket;
 	private RequestsProcessor requestprocessor;
-	public Client(Socket socket, RequestsProcessor requestprocessor)
+	private Server server;
+	public Client(Socket socket, RequestsProcessor requestprocessor, Server server)
 	{
+		this.server = server;
 		this.socket = socket;
 		this.requestprocessor = requestprocessor;
 	}
@@ -49,7 +52,7 @@ public class Client extends Thread {
 				try 
 				{
 					requestprocessor.getSemaphore().acquire();
-					Request req = parseRequest(request, socket);
+					Request req = parseRequest(request, socket, server);
 					if(req != null)
 					{
 						requestprocessor.enqueueRequest(req);
@@ -83,18 +86,18 @@ public class Client extends Thread {
 	 * @return
 	 * @throws BadRequestException 
 	 */
-	private static Request parseRequest(String req, Socket socket) throws BadRequestException
+	private static Request parseRequest(String req, Socket socket, Server server) throws BadRequestException
 	{
 		Request request = null;
 		if(req.matches("GET (.|\n|\r)*"))
 		{
 			
-			request = new Get(req, socket);
+			request = new Get(req, socket, server.getRoot());
 		}
 		else if(req.matches("POST (.|\n|\r)*"))
 		{
 			
-			request = new Post(req, socket);
+			request = new Post(req, socket, server.getRoot());
 		}
 
 		return request;

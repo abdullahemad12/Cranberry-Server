@@ -7,16 +7,18 @@ import exceptions.BadRequestException;
 
 abstract public class Request {
 	
+	private String server_root;
 	private Socket socket;
 	private String url; 
 	private String version;
 	private boolean keep_alive;
 	private String host;
 	private ArrayList<Parameter> cookies;
-	public Request(String request, Socket socket) throws BadRequestException
+	public Request(String request, Socket socket, String server_root) throws BadRequestException
 	{
 		this.socket = socket;
 		this.keep_alive = false;
+		this.server_root = server_root;
 		String[] reqLines = request.split("\\r?\\n");
 		// extracts information from each line
 		for(int i = 0; i < reqLines.length; i++)
@@ -52,11 +54,11 @@ abstract public class Request {
 			// adjusts the correct relative path
 			if(parameters[1].equals("/"))
 			{
-				this.url = "public/index.php"; 
+				this.url = server_root + "/index.php"; 
 			}
 			else
 			{
-				this.url = "public" + parameters[1];
+				this.url = server_root + parameters[1];
 			}
 			
 			this.version = parameters[2];
@@ -92,6 +94,7 @@ abstract public class Request {
 	 * String -> void 
 	 * parses the cookies 
 	 */
+	@SuppressWarnings("unused")
 	private void parseCookies(String str) throws BadRequestException
 	{
 		String[] parameters = str.split(" ");

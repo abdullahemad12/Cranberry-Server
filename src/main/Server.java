@@ -13,12 +13,17 @@ public class Server implements Callable<Server> {
 	
 	private RequestsProcessor requestsprocessor;
 	private ServerSocket serverSocket;
+	private String root;
 
-
-	public Server(int port) throws IOException
+	public String getRoot()
+	{
+		return this.root;
+	}
+	public Server(int port, String root) throws IOException
 	{
 		requestsprocessor = new RequestsProcessor();
 		serverSocket = new ServerSocket(port);
+		this.root = root;
 		
 	}
 	
@@ -35,7 +40,7 @@ public class Server implements Callable<Server> {
 		 while(true) { 
 			  
 	            Socket connectionSocket = serverSocket.accept();
-	            Client client = new Client(connectionSocket, this.requestsprocessor);
+	            Client client = new Client(connectionSocket, this.requestsprocessor, this);
 	            client.start();
 	            
 	      }
@@ -43,16 +48,16 @@ public class Server implements Callable<Server> {
 	
 	public static void main(String[] args)
 	{
-		if(args.length != 1)
+		if(args.length != 2)
 		{
-			System.out.println("USAGE: java -jar Cranberry.jar PORT_NUMBER");
+			System.out.println("USAGE: java -jar Cranberry.jar PORT_NUMBER ROOTFOLDER");
 			return;
 		}
 		
 		int port = Integer.parseInt(args[0]);
 		try
 		{
-			Server server = new Server(port);
+			Server server = new Server(port, args[1]);
 			server.listen();
 			
 		}

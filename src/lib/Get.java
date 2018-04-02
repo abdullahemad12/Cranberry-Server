@@ -7,8 +7,8 @@ import exceptions.BadRequestException;
 public class Get extends Request{
 
 	
-	public Get(String request, Socket socket) throws BadRequestException {
-		super(request, socket);
+	public Get(String request, Socket socket, String server_root) throws BadRequestException {
+		super(request, socket, server_root);
 		// TODO: parse parameters
 	}
 

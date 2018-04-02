@@ -113,7 +113,7 @@ public class ResponseTest {
         Socket[] clientSocket = new Socket[5]; 
         for(int i = 0; i < clientSocket.length; i++)
         {
-        	clientSocket[i] = new Socket("127.0.0.1", 1200); 
+        	clientSocket[i] = new Socket("127.0.0.1", 1202); 
         	Thread.sleep(10);
         }
     

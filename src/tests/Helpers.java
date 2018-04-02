@@ -106,9 +106,10 @@ public class Helpers {
 			{
 				count++;
 			}
+			System.out.println(str[0]);
+
 		}
 		
-		
-		return count == 7;
+		return count >= 7;
 	}
 }

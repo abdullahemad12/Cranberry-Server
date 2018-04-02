@@ -1,15 +1,19 @@
 package lib;
 
+
+
 import java.io.File;
 import java.io.IOException;
+
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
+
+
 
 import exceptions.NotFoundException;
 
@@ -119,8 +123,10 @@ public class Response {
 			else buffer[i] = rawBuffer[i-(tmpByte.length)] ;
 		}
 		
-		new String(buffer, StandardCharsets.UTF_8);
+		
 	}
+	
+
 
 	/**
 	 * Socket -> void 
@@ -130,11 +136,23 @@ public class Response {
 	 */
 	public void sendResponse(Socket socket) throws IOException {
 		
-		generateResponse();
-		socket.getOutputStream().write(buffer);
+		if(mimeType.equals("text/html"))
+		{
+			this.buffer = PHPparser.runPHP(this.rawBuffer);
+		}
+		else
+		{
+			generateResponse();
+		}
+		if(socket.getOutputStream() != null)
+		{
+			socket.getOutputStream().write(buffer);
+		}
 		buffer = null;
 	}
 	
+	
+
 	
 
 }

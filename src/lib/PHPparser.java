@@ -122,7 +122,6 @@ public class PHPparser {
 			code = code + "\nsession_start();";			
 			for(Parameter param : cookies)
 			{
-				System.out.println(param.getValue());
 	
 				code = code + String.format("$_SESSION['%s'] = '%s'; ",param.getKey(), param.getValue());
 	

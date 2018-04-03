@@ -1,9 +1,10 @@
 package model;
 
-import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 import lib.Get;
 import lib.Post;
@@ -32,48 +33,43 @@ public class Client extends Thread {
 	{
 		while(socket.isConnected())
 		{
-			BufferedReader inFromClient = null;
-			try 
-			{	
-				inFromClient = new BufferedReader(new
-				        InputStreamReader(socket.getInputStream()));
-				
-				String request = "";
-				String holder  = "";
-				while((holder = inFromClient.readLine()) != null)
-				{
-					if(holder.length() ==  0)
-					{
-						break;
-					}
-					request = request + holder + "\n";
-				}
+			InputStream in;
+			byte[] buffer = new byte[8192];
 
-				try 
-				{
-					requestprocessor.getSemaphore().acquire();
-					Request req = parseRequest(request, socket, server);
-					if(req != null)
-					{
-						requestprocessor.enqueueRequest(req);
-					}
-					requestprocessor.getSemaphore().release();
-				}
-				catch (BadRequestException e) 
-				{
-					System.out.println(e.getMessage());
-					// TODO: send badly formatted request error code
-				}
-				catch(InterruptedException e)
-				{
-					System.out.println(e.getMessage());
-				}
-			} 
-			catch (IOException e1) 
-			{
+			try {
+				in = socket.getInputStream();
+				int bytesRead = in.read(buffer);
+			    ByteArrayOutputStream output = new ByteArrayOutputStream();
+		        output.write(buffer, 0, bytesRead);
+		        buffer = output.toByteArray();
+
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
 				e1.printStackTrace();
-				return;
 			}
+			String request = new String(buffer, StandardCharsets.UTF_8);
+			
+			try 
+			{
+				requestprocessor.getSemaphore().acquire();
+				Request req = parseRequest(request, socket, server);
+				if(req != null)
+				{
+					requestprocessor.enqueueRequest(req);
+				}
+				requestprocessor.getSemaphore().release();
+			}
+			catch (BadRequestException e) 
+			{
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+				// TODO: send badly formatted request error code
+			}
+			catch(InterruptedException e)
+			{
+				System.out.println(e.getMessage());
+			}
+		
 		
 			
 		}
@@ -102,4 +98,7 @@ public class Client extends Thread {
 
 		return request;
 	}
+	
+	
+	
 }

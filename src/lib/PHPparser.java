@@ -7,14 +7,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * Contains static functions that parses PHP and stores it in an 
  * array of bytes
  *  
- * @author abdullah
+ * @author Abdullah Emad
  *
  */
 public class PHPparser {
@@ -56,7 +55,7 @@ public class PHPparser {
 	 * @return
 	 * @throws IOException 
 	 */
-	private static byte[] readBytes(InputStream in) throws IOException
+	public static byte[] readBytes(InputStream in) throws IOException
 	{
 		byte[] buffer = new byte[8192];
 	    int bytesRead;

@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -138,7 +139,9 @@ public class ResponseTest {
 		        	  InputStream stream = clientSocket[i].getInputStream();
 		        	  byte[] data = new byte[1000];
 		        	  stream.read(data);
-		        	  assertTrue("Incorrect Header Fields", Helpers.validateHeader(data));
+		        	  String datastr = new String(data, StandardCharsets.UTF_8);
+		        	  int expected_content_length = datastr.split("\\r\\n\\r\\n")[1].length();
+		        	  assertTrue("Incorrect Header Fields", Helpers.validateHeader(data, "text/html", expected_content_length));
 		        	  
 		        	  // compares the body
 		      		  String response = new String(data, "UTF-8");
@@ -160,8 +163,10 @@ public class ResponseTest {
 		        	  
 		        	  stream.read(data);
 		              
-		        	  assertTrue("Incorrect Header Fields", Helpers.validateHeader(data));
-		        	  
+		        	  String datastr = new String(data, StandardCharsets.UTF_8);
+		        	  int expected_content_length = datastr.split("\\r\\n\\r\\n")[1].length();
+		        	  assertTrue("Incorrect Header Fields", Helpers.validateHeader(data, "text/html", expected_content_length));
+		        	  		        	  
 		        	  // compares the body
 		      		  String response = new String(data, "UTF-8");
 		      		  String body = response.split("\\r\\n\\r\\n")[1];
@@ -195,8 +200,10 @@ public class ResponseTest {
     	InputStream stream = clientSocket.getInputStream();
    	  	byte[] data = new byte[1000];
    	  	stream.read(data);
-   	  	assertTrue("Incorrect Header Fields", Helpers.validateHeader(data));
-   	  	
+	   	 String datastr = new String(data, StandardCharsets.UTF_8);
+		  int expected_content_length = datastr.split("\\r\\n\\r\\n")[1].length();
+		  assertTrue("Incorrect Header Fields", Helpers.validateHeader(data, "text/html", expected_content_length));
+		     	  	
    	  	  // compares the body
 		  String response = new String(data, "UTF-8");
 		  String body = response.split("\\r\\n\\r\\n")[1];

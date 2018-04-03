@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import lib.Get;
+import lib.Parameter;
 import lib.Post;
 import lib.Request;
 import main.Server;
@@ -27,10 +28,10 @@ public class RequestTest {
 	private static String getRequest = "GET / HTTP/1.1\r\nHost: 127.0.0.1:1200\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9,ar;q=0.8\r\n";
 	private static 	String postRequest = "POST / HTTP/1.1\r\nHost: 127.0.0.1:1200\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36\r\n";
 	private static String getRequest1_0 = "GET /blog.html HTTP/1.0\r\nHost: 127.0.0.1\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9,ar;q=0.8\r\n";
-	private static 	String postRequest1_0 = "POST /form.php HTTP/1.0\r\nHost: 127.0.0.1\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36\r\n";
+	private static 	String postRequest1_0 = "POST /form.php HTTP/1.0\r\nHost: 127.0.0.1\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36\r\nCookie: PHPSESSID=rinfjjd4k6lhr4upd23cr7gld0; remember_web_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6Im5xVzM3MFFqWTM4aWNpbEo2M3dTa2c9PSIsInZhbHVlIjoiM1wvUUs5aitTYzNIaUhWaWFHTDl1bXo3N1hYaEZJSSt4aVhpaDJITHY5RTFVQ042VlZJSXRreThnNWlKUkVNQ21TeXRQMXBsSnFRTzU3NmlzK2JmV28xQ3FMdHE3ZGNlSGN0Zyt3b0VDNERzPSIsIm1hYyI6ImJlZWEyMDVmYTM0MmJjMTg2MTliMDhjZTRlMmMwM2RiZGMyNjRjMTlhNmNjNThmNWY5OWNkN2I4YTk1YTIwMzkifQ%3D%3D; io=oiHP_DWV-YejC-g9AAAI; _blog_session=WmZrdGZVRVJNOFdDMFNKSkUyNHdtK2Y4ZG9CenNXMWVlWmxHcDYxaGZ5Mmg4SHY5Q3BxNnBaWk1aS2owMnIyWmFBYVE1VkoybjZXMFhBeFhsSGdFemdiQVh4cXFjYUZOU3hqL2pzcTNoSVgxR0dwYXZ6ZjJyeXVaVmZPbENuLzVvbTVNM0ZBVk5HUzhlcVN1djJTSkZBPT0tLWFQTkxTL2FjTGN6aHdrV1orK2hxY2c9PQ%3D%3D--ef30453531372a8f07070dcd0be01e8fb5d3cf21\r\n";
 	private static String badrequest = "GET /blog.html ghdfg HTTP/1.0\r\nHost : 127.0.0.1\r\n Upgra de-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9,ar;q=0.8\r\n";
+	private static String getRequestParams = "GET /test.php?name=abdullah&age=12&friend=habob HTTP/1.1\r\nHost: 127.0.0.1:1200\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9,ar;q=0.8\r\n";
 
-	
 	/**
 	 * Checks if the Client class parses the requests correctly 
 	 */
@@ -324,7 +325,37 @@ public class RequestTest {
 	}
 	
 
-	
+	/**
+	 * Makes sure the get Request parses the parameter correctly
+	 */
+	@Test (timeout = 1000) 
+	public void getParametersTest()
+	{
+		try {
+			Request request = new Get(getRequestParams, null, "public");
+			ArrayList<Parameter> params = request.getMethod_parameters();
+			assertEquals("Expected 3 paramters got " + params.size(), 3, params.size());
+			ArrayList<Parameter> expected_parameters = new ArrayList<Parameter>();
+			expected_parameters.add(new Parameter("name", "abdullah"));
+			expected_parameters.add(new Parameter("age", "12"));
+			expected_parameters.add(new Parameter("friend", "habob"));
+
+			for(Parameter param : params)
+			{
+				boolean valid = (param.getKey().equals("name") && param.getValue().equals("abdullah"))
+						||  (param.getKey().equals("age") && param.getValue().equals("12"))
+						||  (param.getKey().equals("friend") && param.getValue().equals("habob"));
+				assertTrue("The parameters did not match the expected ones", valid);
+			}
+			
+					
+		} catch (BadRequestException e) {
+			e.printStackTrace();
+			fail("Unexpected Exception was thrown");
+		}
+	}
+
+
 
 	
 }

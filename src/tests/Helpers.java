@@ -91,7 +91,8 @@ public class Helpers {
 	 * String -> Boolean
 	 * @throws UnsupportedEncodingException 
 	 */
-	public static boolean validateHeader(byte[] res) throws UnsupportedEncodingException
+	public static boolean validateHeader(byte[] res, String expected_content_type,
+			int expected_content_length) throws UnsupportedEncodingException
 	{
 		String header = new String(res, "UTF-8");
 		
@@ -105,11 +106,41 @@ public class Helpers {
 					|| str[0].equals("Content-Type:") || str[0].equals("Connection:"))
 			{
 				count++;
+
 			}
-			System.out.println(str[0]);
+			else if(str[0].equals("Server:"))
+			{
+				if(!str[1].equals("cranberry/1.0"))
+				{
+					return false;
+				}
+				
+			}
+			else if(str[0].equals("Content-Length:"))
+			{
+				if(Integer.parseInt(str[1]) != expected_content_length)
+				{
+					return false;
+				}	
+			}
+			else if (str[0].equals("Content-Type:"))
+			{
+				if(!str[1].equals(expected_content_type))
+				{
+					return false;
+				}
+			}
+			else if(str[0].equals("Connection:"))
+			{
+				if(!str[1].equals("keep-alive") && !str[1].equals("closed"))
+				{
+					return false;
+				}
+			}
+			
 
 		}
 		
-		return count >= 7;
+		return count >= 4;
 	}
 }

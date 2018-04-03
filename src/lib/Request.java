@@ -14,6 +14,7 @@ abstract public class Request {
 	private boolean keep_alive;
 	private String host;
 	private ArrayList<Parameter> cookies;
+	private ArrayList<Parameter> method_parameters;
 	public Request(String request, Socket socket, String server_root) throws BadRequestException
 	{
 		this.socket = socket;
@@ -86,7 +87,8 @@ abstract public class Request {
 		}
 		else if(parameters[0].equals("Cookie:"))
 		{
-			//parseCookies(str);
+			this.cookies = new ArrayList<Parameter>();
+			parseCookies(str);
 		}
 	}
 
@@ -94,10 +96,9 @@ abstract public class Request {
 	 * String -> void 
 	 * parses the cookies 
 	 */
-	@SuppressWarnings("unused")
 	private void parseCookies(String str) throws BadRequestException
 	{
-		String[] parameters = str.split(" ");
+		String[] parameters = str.split("; ");
 		
 		for(int i = 1; i < parameters.length; i++)
 		{
@@ -107,8 +108,12 @@ abstract public class Request {
 				throw new BadRequestException();
 			}
 			
-			String[] cookiestrs = parameters[i].split("; ");
-			Parameter cookie = new Parameter(cookiestrs[0], cookiestrs[2]);
+			String[] cookiestrs = parameters[i].split("=");
+			if(cookiestrs.length != 2)
+			{
+				throw new BadRequestException();
+			}
+			Parameter cookie = new Parameter(cookiestrs[0], cookiestrs[1]);
 			this.cookies.add(cookie);
 		}
 	}
@@ -134,5 +139,15 @@ abstract public class Request {
 	public ArrayList<Parameter> getCookies()
 	{
 		return this.cookies;
+	}
+
+
+	public ArrayList<Parameter> getMethod_parameters() {
+		return method_parameters;
+	}
+
+
+	public void setMethod_parameters(ArrayList<Parameter> method_parameters) {
+		this.method_parameters = method_parameters;
 	}
 }

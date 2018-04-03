@@ -1,10 +1,9 @@
 package model;
 
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 
 import lib.Get;
 import lib.Post;
@@ -33,21 +32,16 @@ public class Client extends Thread {
 	{
 		while(socket.isConnected())
 		{
-			InputStream in;
-			byte[] buffer = new byte[819222];
 
+				
+
+			String request = "";
 			try {
-				in = socket.getInputStream();
-				int bytesRead = in.read(buffer);
-			    ByteArrayOutputStream output = new ByteArrayOutputStream();
-		        output.write(buffer, 0, bytesRead);
-		        buffer = output.toByteArray();
-
+				request = readRequest(socket);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			String request = new String(buffer, StandardCharsets.UTF_8);
 			
 			try 
 			{
@@ -84,7 +78,6 @@ public class Client extends Thread {
 	 */
 	private static Request parseRequest(String req, Socket socket, Server server) throws BadRequestException
 	{
-		System.out.println(req);
 		Request request = null;
 		if(req.matches("GET (.|\n|\r)*"))
 		{
@@ -100,6 +93,26 @@ public class Client extends Thread {
 		return request;
 	}
 	
+	
+	private String readRequest(Socket socket) throws IOException
+	{
+		
+		BufferedReader inFromClient = new BufferedReader(new
+		        InputStreamReader(socket.getInputStream()));
+		
+		String request = "";
+		String holder  = "";
+		while((holder = inFromClient.readLine()) != null)
+		{
+			if(holder.length() ==  0 || holder.equals("\n") || holder.equals(" ") || holder.equals(""))
+			{
+				break;
+			}
+			request = request + holder + "\n";
+		}
+
+		return request;
+	}
 	
 	
 }

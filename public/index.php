@@ -5,7 +5,14 @@
 	
 	<body>
 		<p>Hello world</p>
-		<?php for($i = 0; $i < 50; $i++){echo($i);}?>
+
+		<h2>Log in</h2>
+
+		<form action = "login.php">
+			<input type = "text" name = "username">
+			<input type = "password" name = "password">
+			<button type = "submit">Login</button>			
+		</form>
 	</body>
 </html>
 

@@ -150,4 +150,7 @@ abstract public class Request {
 	public void setMethod_parameters(ArrayList<Parameter> method_parameters) {
 		this.method_parameters = method_parameters;
 	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
 }

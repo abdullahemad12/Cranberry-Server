@@ -18,6 +18,7 @@ public class Get extends Request{
 		}
 		else
 		{
+			this.setUrl(params_path[0]);
 			ArrayList<Parameter> method_parameters = new ArrayList<>();
 			String[] params = params_path[1].split("\\&");
 			for(int i = 0; i < params.length; i++)
@@ -25,10 +26,13 @@ public class Get extends Request{
 				String[] fields = params[i].split("\\=");
 				if(fields.length != 2)
 				{
-					throw new BadRequestException();
+					method_parameters.add(new Parameter(fields[0], ""));
+				}
+				else
+				{
+					method_parameters.add(new Parameter(fields[0], fields[1]));
 				}
 
-				method_parameters.add(new Parameter(fields[0], fields[1]));
 			}
 			this.setMethod_parameters(method_parameters);
 		}

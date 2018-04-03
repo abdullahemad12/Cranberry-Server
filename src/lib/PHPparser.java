@@ -44,8 +44,7 @@ public class PHPparser {
        
         byte[] generated_php = readBytes(stdout);
         String php_string = new String(generated_php, "UTF-8");
-        
-        return generateHttpHeader(php_string, rawPHP.length);
+        return generateHttpHeader(php_string);
 	}
 	
 
@@ -73,15 +72,25 @@ public class PHPparser {
 	 * Given the generated http response, produces essentail server headers
 	 */
 
-	private static byte[] generateHttpHeader(String rawResponse, int bufferLength)
+	private static byte[] generateHttpHeader(String rawResponse)
 	{
+		String[] resp = rawResponse.split("\r\n\r\n");
+		int length = 0;
+		if(resp.length == 2)
+		{
+			length = resp[1].length();
+		}
+		else
+		{
+			length = rawResponse.length();
+		}
 		Date dateTemp = new Date();
 		String[] data = new String[6];
 		data[0] = "HTTP/1.1 200 OK \r\n";
 		data[1] = "Date: "+dateTemp.toString()+"\r\n";
 		data[2] = "Last-Modified: "+dateTemp.toString()+"\r\n";
 		data[3] = "Server: cranberry/1.0\r\n";
-		data[4] = "Content-Length: " + bufferLength + "\r\n";
+		data[4] = "Content-Length: " + length + "\r\n";
 		data[5] = "Connection: closed\r\n";
 		String tmp = "";
 		for (int i = 0; i < data.length; i++) {
@@ -99,23 +108,28 @@ public class PHPparser {
 	private static String setCookiesPHPcode(String phpstr, ArrayList<Parameter> params,  ArrayList<Parameter> cookies)
 	{
 	
-		if(params == null)
-		{
-			return "<?php $_SERVER[\"REQUEST_METHOD\"] = \"GET\"; ?>" + phpstr;
-		}
 		String code = "<?php $_SERVER[\"REQUEST_METHOD\"] = \"GET\";";
-		for(Parameter param : params)
+		if(params != null)
 		{
-			code = code + String.format("$_GET[\"%s\"] = \"%s\"; ",param.getKey(), param.getValue());
-			
+			for(Parameter param : params)
+			{
+				code = code + String.format("$_GET[\"%s\"] = \"%s\"; ",param.getKey(), param.getValue());
+				
+			}
 		}
-		code = code + "\nsession_start();";
-		for(Parameter param : cookies)
+		if(cookies != null)
 		{
-			code = code + String.format("$_SESSION['%s'] = '%s'; ",param.getKey(), param.getValue());
-
+			code = code + "\nsession_start();";			
+			for(Parameter param : cookies)
+			{
+				System.out.println(param.getValue());
+	
+				code = code + String.format("$_SESSION['%s'] = '%s'; ",param.getKey(), param.getValue());
+	
+			}
 		}
 		code = code + "?>";
+		System.out.println(code);
 		return code + phpstr;
 	}
 	

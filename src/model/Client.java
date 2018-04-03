@@ -34,7 +34,7 @@ public class Client extends Thread {
 		while(socket.isConnected())
 		{
 			InputStream in;
-			byte[] buffer = new byte[8192];
+			byte[] buffer = new byte[819222];
 
 			try {
 				in = socket.getInputStream();
@@ -84,6 +84,7 @@ public class Client extends Thread {
 	 */
 	private static Request parseRequest(String req, Socket socket, Server server) throws BadRequestException
 	{
+		System.out.println(req);
 		Request request = null;
 		if(req.matches("GET (.|\n|\r)*"))
 		{

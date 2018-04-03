@@ -29,13 +29,17 @@ public class Response {
 
 	String url;
 	ArrayList<Parameter> cookies;
+	ArrayList<Parameter> method_parameters;
+
 	String mimeType; /* mime type of the requested resource */
 	byte[] rawBuffer; /* holds the raw content read from directly from the file */
 	byte[] buffer; /* holds the response that gets sent to the user */
 	int statusCode;
+	
 	String status;
-	public Response(String url, ArrayList<Parameter> cookies) throws IOException, NotFoundException {
+	public Response(String url, ArrayList<Parameter> cookies, ArrayList<Parameter> method_parameters) throws IOException, NotFoundException {
 		// file not found
+		this.method_parameters = method_parameters;
 		if(url == null)
 		{
 			statusCode = 404;
@@ -138,7 +142,7 @@ public class Response {
 		
 		if(mimeType.equals("text/html"))
 		{
-			this.buffer = PHPparser.runPHP(this.rawBuffer);
+			this.buffer = PHPparser.runPHP(this.rawBuffer, this.method_parameters, this.cookies);
 		}
 		else
 		{

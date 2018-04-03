@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -23,7 +24,7 @@ public class PHPparser {
 	 * parses php script and executes it
 	 * @return a buffer containing html generated from a php script with the essential headers
 	 */
-	public static byte[] runPHP(byte[] rawPHP) throws IOException
+	public static byte[] runPHP(byte[] rawPHP, ArrayList<Parameter> method_parameter, ArrayList<Parameter> cookies) throws IOException
 	{
 		ProcessBuilder php_cgi = new ProcessBuilder("php-cgi7.0");
 		Process php_process = php_cgi.start();
@@ -33,8 +34,9 @@ public class PHPparser {
         
         BufferedWriter std_in_writer = new BufferedWriter(new OutputStreamWriter(stdin));
 
-        
-        std_in_writer.write(new String(rawPHP, StandardCharsets.UTF_8));
+        String php_code = new String(rawPHP, StandardCharsets.UTF_8);
+        php_code = setCookiesPHPcode(php_code, method_parameter, cookies);
+        std_in_writer.write(php_code);
         std_in_writer.flush();
         std_in_writer.close();
         
@@ -89,10 +91,32 @@ public class PHPparser {
 		return response.getBytes();
 	}
 	
-	private static String setCookiesPHPcode()
+	/**
+	 * String -> String
+	 * Adds PHP script that initializes the global variables to a given phpscrip
+	 * @return
+	 */
+	private static String setCookiesPHPcode(String phpstr, ArrayList<Parameter> params,  ArrayList<Parameter> cookies)
 	{
-		return null;
-		//String code = "<?php ?>"
+	
+		if(params == null)
+		{
+			return "<?php $_SERVER[\"REQUEST_METHOD\"] = \"GET\"; ?>" + phpstr;
+		}
+		String code = "<?php $_SERVER[\"REQUEST_METHOD\"] = \"GET\";";
+		for(Parameter param : params)
+		{
+			code = code + String.format("$_GET[\"%s\"] = \"%s\"; ",param.getKey(), param.getValue());
+			
+		}
+		code = code + "\nsession_start();";
+		for(Parameter param : cookies)
+		{
+			code = code + String.format("$_SESSION['%s'] = '%s'; ",param.getKey(), param.getValue());
+
+		}
+		code = code + "?>";
+		return code + phpstr;
 	}
 	
 

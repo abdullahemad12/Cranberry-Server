@@ -47,13 +47,13 @@ public class RequestsProcessor extends Thread{
 				Request request = dequeueRequest();
 				try
 				{
-					Response response = new Response(request.getUrl(), request.getCookies());
+					Response response = new Response(request.getUrl(), request.getCookies(), request.getMethod_parameters());
 					response.sendResponse(request.getSocket());
 				}
 				catch(NotFoundException | IOException e)
 				{
 					try {
-						Response response = new Response(null, null);
+						Response response = new Response(null, null, null);
 						response.sendResponse(request.getSocket());
 					} catch (IOException | NotFoundException e1) {
 						e1.printStackTrace();

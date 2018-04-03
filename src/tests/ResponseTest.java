@@ -32,7 +32,7 @@ public class ResponseTest {
 		public void LoadFileTest() throws IOException, NotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
 			
 			// Get the private method from the response class
-			Response response = new Response("public/index.php", null);
+			Response response = new Response("public/index.php", null, null);
 			Class<?> responseClass = response.getClass();
 			
 			Class<?>[] arr = null;
@@ -60,7 +60,7 @@ public class ResponseTest {
 		public void mimeTypeTest() throws IOException, NotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
 		{
 			// Get the private method from the response class
-			Response response = new Response("public/index.php", null);
+			Response response = new Response("public/index.php", null, null);
 			Class<?> responseClass = response.getClass();
 			
 			Class<?>[] arr = null;
@@ -81,7 +81,7 @@ public class ResponseTest {
 	        
 	        
 	        // tries loading an image
-	        Response response1 = new Response("public/test.jpg", null);
+	        Response response1 = new Response("public/test.jpg", null, null);
 			Class<?> responseClass1 = response1.getClass();
 			
 			

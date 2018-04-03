@@ -2,8 +2,11 @@ package lib;
 
 
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import java.net.Socket;
 import java.net.URL;
@@ -44,16 +47,17 @@ public class Response {
 		{
 			statusCode = 404;
 			status = "Not Found";
-			url = "html/notfound.php";
+			this.loadNotFound();
 		}
 		else
 		{
 			statusCode = 200;
 			status = "OK";
+			this.url = url;
+			this.cookies = cookies;
+			this.LoadData();
 		}
-		this.url = url;
-		this.cookies = cookies;
-		this.LoadData();
+		
 
 	}
 
@@ -68,7 +72,7 @@ public class Response {
 	 * @throws NotFoundException
 	 * 
 	 */
-	private void LoadData() throws IOException, NotFoundException {
+	private void LoadData() throws IOException, NotFoundException {		
 		// check that the file exists
 		File file = new File(this.url);
 		if (!file.exists()) {
@@ -130,7 +134,31 @@ public class Response {
 		
 	}
 	
+	/**void -> void
+	 * Loads the notfound html file to the rawbuffer
+	 * @throws IOException 
+	 * 
+	 */
+	private void loadNotFound() throws IOException
+	{
+		// just load the NOT found html file and return
 
+				
+		InputStream in = getClass().getResourceAsStream("notfound.php"); 
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		String notfoundhtml = "";
+		String tmp;
+		while((tmp = reader.readLine()) != null)
+		{
+			notfoundhtml = notfoundhtml + tmp + "\n";
+		}
+		this.rawBuffer = notfoundhtml.getBytes();
+		this.mimeType = "text/html";
+		return;
+
+				
+
+	}
 
 	/**
 	 * Socket -> void 

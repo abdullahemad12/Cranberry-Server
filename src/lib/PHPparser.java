@@ -129,7 +129,6 @@ public class PHPparser {
 			}
 		}
 		code = code + "?>";
-		System.out.println(code);
 		return code + phpstr;
 	}
 	

@@ -2,11 +2,8 @@ package lib;
 
 
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import java.net.Socket;
 import java.net.URL;
@@ -37,27 +34,15 @@ public class Response {
 	String mimeType; /* mime type of the requested resource */
 	byte[] rawBuffer; /* holds the raw content read from directly from the file */
 	byte[] buffer; /* holds the response that gets sent to the user */
-	int statusCode;
-	
-	String status;
+
 	public Response(String url, ArrayList<Parameter> cookies, ArrayList<Parameter> method_parameters) throws IOException, NotFoundException {
 		// file not found
 		this.method_parameters = method_parameters;
-		if(url == null)
-		{
-			statusCode = 404;
-			status = "Not Found";
-			this.loadNotFound();
-		}
-		else
-		{
-			statusCode = 200;
-			status = "OK";
-			this.url = url;
-			this.cookies = cookies;
-			this.LoadData();
-		}
-		
+
+		this.url = url;
+		this.cookies = cookies;
+		this.LoadData();
+
 
 	}
 
@@ -76,7 +61,9 @@ public class Response {
 		// check that the file exists
 		File file = new File(this.url);
 		if (!file.exists()) {
-			throw new NotFoundException(this.url);
+			this.rawBuffer = null;
+			this.buffer = null;
+			return;
 		}
 
 		// sets the Type
@@ -112,7 +99,7 @@ public class Response {
 
 		Date dateTemp = new Date();
 		String[] data = new String[7];
-		data[0] = "HTTP/1.1 " + this.statusCode + " " + this.status + "\r\n";
+		data[0] = "HTTP/1.1 200 OK\r\n";
 		data[1] = "Date: "+dateTemp.toString()+"\r\n";
 		data[2] = "Last-Modified: "+dateTemp.toString()+"\r\n";
 		data[3] = "Server: cranberry/1.0\r\n";
@@ -134,40 +121,20 @@ public class Response {
 		
 	}
 	
-	/**void -> void
-	 * Loads the notfound html file to the rawbuffer
-	 * @throws IOException 
-	 * 
-	 */
-	private void loadNotFound() throws IOException
-	{
-		// just load the NOT found html file and return
-
-				
-		InputStream in = getClass().getResourceAsStream("notfound.php"); 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-		String notfoundhtml = "";
-		String tmp;
-		while((tmp = reader.readLine()) != null)
-		{
-			notfoundhtml = notfoundhtml + tmp + "\n";
-		}
-		this.rawBuffer = notfoundhtml.getBytes();
-		this.mimeType = "text/html";
-		return;
-
-				
-
-	}
-
+	
 	/**
 	 * Socket -> void 
 	 * Sends a Generated Response to the destination socket
 	 * @param socket:the destination TCP socket
 	 * @throws IOException
+	 * @throws NotFoundException 
 	 */
-	public void sendResponse(Socket socket) throws IOException {
+	public void sendResponse(Socket socket) throws IOException, NotFoundException {
 		
+		if(this.rawBuffer == null)
+		{
+			throw new NotFoundException(this.url, socket);
+		}
 		if(mimeType.equals("text/html"))
 		{
 			this.buffer = PHPparser.runPHP(this.rawBuffer, this.method_parameters, this.cookies);

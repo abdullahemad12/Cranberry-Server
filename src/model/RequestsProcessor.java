@@ -52,12 +52,6 @@ public class RequestsProcessor extends Thread{
 				}
 				catch(NotFoundException | IOException e)
 				{
-					try {
-						Response response = new Response(null, null, null);
-						response.sendResponse(request.getSocket());
-					} catch (IOException | NotFoundException e1) {
-						e1.printStackTrace();
-					}
 					System.out.print(e.getMessage());
 				}
 			

@@ -49,7 +49,7 @@ abstract public class Request {
 			// this line should contain the HTTP method, source, Version
 			if(parameters.length != 3)
 			{
-				throw new BadRequestException();
+				throw new BadRequestException(this.socket);
 			}
 			
 			// adjusts the correct relative path
@@ -69,7 +69,7 @@ abstract public class Request {
 		{
 			if(parameters.length != 2)
 			{
-				throw new BadRequestException();
+				throw new BadRequestException(this.socket);
 			}
 			this.host = parameters[1];
 		}
@@ -78,7 +78,7 @@ abstract public class Request {
 		{
 			if(parameters.length != 2)
 			{
-				throw new BadRequestException();
+				throw new BadRequestException(this.socket);
 			}
 			if(parameters[1].equals("keep-alive"))
 			{
@@ -105,13 +105,13 @@ abstract public class Request {
 			// makes sure it's correctly formatted
 			if(!parameters[i].matches("(.*)=(.*)"))
 			{
-				throw new BadRequestException();
+				throw new BadRequestException(this.socket);
 			}
 			
 			String[] cookiestrs = parameters[i].split("=");
 			if(cookiestrs.length != 2)
 			{
-				throw new BadRequestException();
+				throw new BadRequestException(this.socket);
 			}
 			Parameter cookie = new Parameter(cookiestrs[0], cookiestrs[1]);
 			this.cookies.add(cookie);

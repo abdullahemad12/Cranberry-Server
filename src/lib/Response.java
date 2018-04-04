@@ -169,7 +169,7 @@ public class Response {
 		}
 		if(socket.getOutputStream() != null)
 		{
-			System.out.println(new String(buffer));
+			System.out.println("200 OK " + this.url + "\n");
 			socket.getOutputStream().write(buffer);
 		}
 		buffer = null;

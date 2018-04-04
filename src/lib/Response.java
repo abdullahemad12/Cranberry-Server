@@ -27,23 +27,47 @@ import exceptions.NotFoundException;
  */
 public class Response {
 
-	String url;
-	ArrayList<Parameter> cookies;
-	ArrayList<Parameter> method_parameters;
+	private String url;
+	private ArrayList<Parameter> cookies;
+	private ArrayList<Parameter> method_parameters;
 
-	String mimeType; /* mime type of the requested resource */
-	byte[] rawBuffer; /* holds the raw content read from directly from the file */
-	byte[] buffer; /* holds the response that gets sent to the user */
-
+	private String mimeType; /* mime type of the requested resource */
+	private byte[] rawBuffer; /* holds the raw content read from directly from the file */
+	private byte[] buffer; /* holds the response that gets sent to the user */
+	private String connection; /*Close or Keep-alive*/
 	public Response(String url, ArrayList<Parameter> cookies, ArrayList<Parameter> method_parameters) throws IOException, NotFoundException {
 		// file not found
 		this.method_parameters = method_parameters;
 
+		this.connection = "Keep-Alive";
 		this.url = url;
 		this.cookies = cookies;
 		this.LoadData();
 
+	}
 
+	public String getConnection() {
+		return connection;
+	}
+
+	public void setConnection(String connection) {
+		this.connection = connection;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public ArrayList<Parameter> getCookies() {
+		return cookies;
+	}
+
+	public ArrayList<Parameter> getMethod_parameters() {
+		return method_parameters;
+	}
+
+	public String getMimeType() {
+		return mimeType;
 	}
 
 	/**
@@ -104,7 +128,7 @@ public class Response {
 		data[2] = "Last-Modified: "+dateTemp.toString()+"\r\n";
 		data[3] = "Server: cranberry/1.0\r\n";
 		data[4] = "Content-Length: " + rawBuffer.length + "\r\n";
-		data[5] = "Connection: Keep-Alive\r\n";
+		data[5] = "Connection: " + this.connection + "\r\n";
 		data[6] = "Content-Type: " + mimeType + "\r\n\r\n";
 		String tmp = "";
 		for (int i = 0; i < data.length; i++) {
@@ -137,7 +161,7 @@ public class Response {
 		}
 		if(mimeType.equals("text/html"))
 		{
-			this.buffer = PHPparser.runPHP(this.rawBuffer, this.method_parameters, this.cookies);
+			this.buffer = PHPparser.runPHP(this.rawBuffer, this);
 		}
 		else
 		{
@@ -145,6 +169,7 @@ public class Response {
 		}
 		if(socket.getOutputStream() != null)
 		{
+			System.out.println(new String(buffer));
 			socket.getOutputStream().write(buffer);
 		}
 		buffer = null;

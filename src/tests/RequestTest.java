@@ -239,9 +239,9 @@ public class RequestTest {
 			// this line shouldn't be reached
 			fail("excepts it to throw a bad request exception");
 		}
-		catch(BadRequestException e)
+		catch(Exception e)
 		{
-			
+			e.printStackTrace();
 		}
 		
 	}

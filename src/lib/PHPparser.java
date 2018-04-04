@@ -24,7 +24,7 @@ public class PHPparser {
 	 * parses php script and executes it
 	 * @return a buffer containing html generated from a php script with the essential headers
 	 */
-	public static byte[] runPHP(byte[] rawPHP, ArrayList<Parameter> method_parameter, ArrayList<Parameter> cookies) throws IOException
+	public static byte[] runPHP(byte[] rawPHP, Response response) throws IOException
 	{
 		ProcessBuilder php_cgi = new ProcessBuilder("php-cgi7.0");
 		Process php_process = php_cgi.start();
@@ -35,7 +35,7 @@ public class PHPparser {
         BufferedWriter std_in_writer = new BufferedWriter(new OutputStreamWriter(stdin));
 
         String php_code = new String(rawPHP, StandardCharsets.UTF_8);
-        php_code = setCookiesPHPcode(php_code, method_parameter, cookies);
+        php_code = setCookiesPHPcode(php_code, response);
         std_in_writer.write(php_code);
         std_in_writer.flush();
         std_in_writer.close();
@@ -105,10 +105,10 @@ public class PHPparser {
 	 * Adds PHP script that initializes the global variables to a given phpscrip
 	 * @return
 	 */
-	private static String setCookiesPHPcode(String phpstr, ArrayList<Parameter> params,  ArrayList<Parameter> cookies)
+	private static String setCookiesPHPcode(String phpstr, Response response)
 	{
-	
 		String code = "<?php $_SERVER[\"REQUEST_METHOD\"] = \"GET\";";
+		ArrayList<Parameter> params = response.getMethod_parameters();
 		if(params != null)
 		{
 			for(Parameter param : params)
@@ -117,6 +117,7 @@ public class PHPparser {
 				
 			}
 		}
+		ArrayList<Parameter> cookies = response.getCookies();
 		if(cookies != null)
 		{
 			code = code + "\nsession_start();";			

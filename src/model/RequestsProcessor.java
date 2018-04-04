@@ -48,6 +48,10 @@ public class RequestsProcessor extends Thread{
 				try
 				{
 					Response response = new Response(request.getUrl(), request.getCookies(), request.getMethod_parameters());
+					if(this.isAlive())
+					{
+						response.setConnection("closed");
+					}
 					response.sendResponse(request.getSocket());
 				}
 				catch(NotFoundException | IOException e)

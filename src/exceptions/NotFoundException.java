@@ -52,7 +52,7 @@ public class NotFoundException extends Exception{
 		data[2] = "Last-Modified: "+dateTemp.toString()+"\r\n";
 		data[3] = "Server: cranberry/1.0\r\n";
 		data[4] = "Content-Length: " + rawBuffer.length + "\r\n";
-		data[5] = "Connection: closed\r\n";
+		data[5] = "Connection: Keep-Alive\r\n";
 		data[6] = "Content-Type: text/html\r\n\r\n";
 		tmp = "";
 		for (int i = 0; i < data.length; i++) {

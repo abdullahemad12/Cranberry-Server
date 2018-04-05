@@ -166,7 +166,7 @@ public class Response {
 		else
 		{
 			generateResponse();
-		}
+		} 
 		if(socket.getOutputStream() != null)
 		{
 			System.out.println("200 OK " + this.url + "\n");
